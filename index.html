@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interaktif: Statistika Data Kelompok</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX CDN for Math Expressions -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white min-h-screen flex flex-col justify-between">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-filter backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-brand-600 text-white rounded-xl shadow-md">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-slate-900 leading-tight">Quiz Statistika Matematika</h1>
+                        <p class="text-xs text-slate-500">Evaluasi Mandiri Data Kelompok Lengkap</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="py-8 bg-gradient-to-b from-indigo-50/50 to-slate-100 flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-6">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-200">
+                    Evaluasi Pemahaman Mandiri
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
+                    Quiz Interaktif: 5 Soal Data Kelompok Komprehensif
+                </h2>
+                <p class="text-slate-600 text-xs sm:text-sm mt-2">
+                    Lengkapi tabel bantuan <strong>Mean, Frekuensi Kumulatif, Simpangan Rata-rata, Varians</strong>, serta rincian komponen <strong>Kuartil (Q1, Q2, Q3)</strong> pada setiap soal!
+                </p>
+            </div>
+
+            <!-- Quiz Main Card Container -->
+            <div class="max-w-6xl mx-auto bg-white border border-slate-200 rounded-2xl p-4 sm:p-8 shadow-md">
+                
+                <div class="flex flex-wrap items-center justify-between border-b border-slate-200 pb-4 mb-6 gap-3">
+                    <div class="flex space-x-2 overflow-x-auto" id="quiz-tabs-container">
+                        <button onclick="switchQuizSoal(1)" id="quiz-tab-1" class="px-4 py-2 text-xs font-bold rounded-xl bg-brand-600 text-white shadow transition">Soal 1</button>
+                        <button onclick="switchQuizSoal(2)" id="quiz-tab-2" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Soal 2</button>
+                        <button onclick="switchQuizSoal(3)" id="quiz-tab-3" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Soal 3</button>
+                        <button onclick="switchQuizSoal(4)" id="quiz-tab-4" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Soal 4</button>
+                        <button onclick="switchQuizSoal(5)" id="quiz-tab-5" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Soal 5</button>
+                    </div>
+
+                    <div class="text-xs font-bold text-slate-700 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100">
+                        Skor Quiz: <span id="quiz-total-score" class="text-brand-600 text-sm font-extrabold">0 / 5</span> Selesai
+                    </div>
+                </div>
+
+                <!-- Dynamic Soal View Container -->
+                <div id="quiz-soal-view" class="space-y-8">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-950 text-slate-400 py-6 border-t border-slate-800 text-xs text-center">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 E-Modul Interaktif Matematika Wajib SMA - Quiz Interaktif Data Kelompok.</p>
+        </div>
+    </footer>
+
+    <script>
+        const quizData = [
+            {
+                id: 1,
+                title: "Soal 1: Data Nilai Ujian Fisika SMA (N = 20)",
+                context: "Tabel distribusi frekuensi nilai ujian Fisika 20 siswa:",
+                intervals: ["10 – 14", "15 – 19", "20 – 24", "25 – 29", "30 – 34"],
+                freqs: [2, 4, 8, 4, 2],
+                mids: [12, 17, 22, 27, 32],
+                fx: [24, 68, 176, 108, 64],
+                sumFx: 440,
+                mean: 22.0,
+                fk: [2, 6, 14, 18, 20],
+                absDevs: [10, 5, 0, 5, 10],
+                fAbsDevs: [20, 20, 0, 20, 20],
+                sumFAbsDev: 80,
+                sr: 4.0,
+                sqDevs: [100, 25, 0, 25, 100],
+                fSqDevs: [200, 100, 0, 100, 200],
+                sumFSqDev: 600,
+                varians: 30.0,
+                p: 5,
+                q1: { pos: 5, tb: 14.5, fk: 2, fq: 4, val: 18.25 },
+                q2: { pos: 10, tb: 19.5, fk: 6, fq: 8, val: 22.0 },
+                q3: { pos: 15, tb: 24.5, fk: 14, fq: 4, val: 25.75 },
+                q1Explain: "Letak $Q_1 = \\frac{1}{4} \\times 20 = 5$ (Kelas 15–19). $T_b = 14.5, F_k = 2, f = 4, p = 5$. $Q_1 = 14.5 + \\left(\\frac{5-2}{4}\\right) \\times 5 = 18.25$.",
+                q2Explain: "Letak $Q_2 = \\frac{2}{4} \\times 20 = 10$ (Kelas 20–24). $T_b = 19.5, F_k = 6, f = 8, p = 5$. $Q_2 = 19.5 + \\left(\\frac{10-6}{8}\\right) \\times 5 = 22.0$.",
+                q3Explain: "Letak $Q_3 = \\frac{3}{4} \\times 20 = 15$ (Kelas 25–29). $T_b = 24.5, F_k = 14, f = 4, p = 5$. $Q_3 = 24.5 + \\left(\\frac{15-14}{4}\\right) \\times 5 = 25.75$."
+            },
+            {
+                id: 2,
+                title: "Soal 2: Data Tinggi Badan Siswa / cm (N = 30)",
+                context: "Tabel distribusi frekuensi tinggi badan 30 siswa:",
+                intervals: ["141 – 145", "146 – 150", "151 – 155", "156 – 160", "161 – 165"],
+                freqs: [3, 5, 12, 6, 4],
+                mids: [143, 148, 153, 158, 163],
+                fx: [429, 740, 1836, 948, 652],
+                sumFx: 4605,
+                mean: 153.5,
+                fk: [3, 8, 20, 26, 30],
+                absDevs: [10.5, 5.5, 0.5, 4.5, 9.5],
+                fAbsDevs: [31.5, 27.5, 6.0, 27.0, 38.0],
+                sumFAbsDev: 130,
+                sr: 4.33,
+                sqDevs: [110.25, 30.25, 0.25, 20.25, 90.25],
+                fSqDevs: [330.75, 151.25, 3.0, 121.5, 361.0],
+                sumFSqDev: 967.5,
+                varians: 32.25,
+                p: 5,
+                q1: { pos: 7.5, tb: 145.5, fk: 3, fq: 5, val: 150.0 },
+                q2: { pos: 15, tb: 150.5, fk: 8, fq: 12, val: 153.42 },
+                q3: { pos: 22.5, tb: 155.5, fk: 20, fq: 6, val: 157.58 },
+                q1Explain: "Letak $Q_1 = 7.5$ (Kelas 146–150). $T_b = 145.5, F_k = 3, f = 5, p = 5$. $Q_1 = 145.5 + \\left(\\frac{7.5-3}{5}\\right) \\times 5 = 150.0$.",
+                q2Explain: "Letak $Q_2 = 15$ (Kelas 151–155). $T_b = 150.5, F_k = 8, f = 12, p = 5$. $Q_2 = 150.5 + \\left(\\frac{15-8}{12}\\right) \\times 5 \\approx 153.42$.",
+                q3Explain: "Letak $Q_3 = 22.5$ (Kelas 156–160). $T_b = 155.5, F_k = 20, f = 6, p = 5$. $Q_3 = 155.5 + \\left(\\frac{22.5-20}{6}\\right) \\times 5 \\approx 157.58$."
+            },
+            {
+                id: 3,
+                title: "Soal 3: Data Berat Badan Anggota Klub Olahraga / kg (N = 30)",
+                context: "Tabel distribusi frekuensi berat badan 30 orang:",
+                intervals: ["40 – 44", "45 – 49", "50 – 54", "55 – 59", "60 – 64"],
+                freqs: [2, 8, 10, 8, 2],
+                mids: [42, 47, 52, 57, 62],
+                fx: [84, 376, 520, 456, 124],
+                sumFx: 1560,
+                mean: 52.0,
+                fk: [2, 10, 20, 28, 30],
+                absDevs: [10, 5, 0, 5, 10],
+                fAbsDevs: [20, 40, 0, 40, 20],
+                sumFAbsDev: 120,
+                sr: 4.0,
+                sqDevs: [100, 25, 0, 25, 100],
+                fSqDevs: [200, 200, 0, 200, 200],
+                sumFSqDev: 800,
+                varians: 26.67,
+                p: 5,
+                q1: { pos: 7.5, tb: 44.5, fk: 2, fq: 8, val: 47.94 },
+                q2: { pos: 15, tb: 49.5, fk: 10, fq: 10, val: 52.0 },
+                q3: { pos: 22.5, tb: 54.5, fk: 20, fq: 8, val: 56.06 },
+                q1Explain: "Letak $Q_1 = 7.5$ (Kelas 45–49). $T_b = 44.5, F_k = 2, f = 8, p = 5$. $Q_1 = 44.5 + \\left(\\frac{7.5-2}{8}\\right) \\times 5 \\approx 47.94$.",
+                q2Explain: "Letak $Q_2 = 15$ (Kelas 50–54). $T_b = 49.5, F_k = 10, f = 10, p = 5$. $Q_2 = 49.5 + \\left(\\frac{15-10}{10}\\right) \\times 5 = 52.0$.",
+                q3Explain: "Letak $Q_3 = 22.5$ (Kelas 55–59). $T_b = 54.5, F_k = 20, f = 8, p = 5$. $Q_3 = 54.5 + \\left(\\frac{22.5-20}{8}\\right) \\times 5 \\approx 56.06$."
+            },
+            {
+                id: 4,
+                title: "Soal 4: Data Hasil Panen Padi Petani / kg (N = 30)",
+                context: "Tabel distribusi frekuensi hasil panen padi 30 kelompok tani:",
+                intervals: ["31 – 40", "41 – 50", "51 – 60", "61 – 70", "71 – 80"],
+                freqs: [4, 6, 10, 6, 4],
+                mids: [35.5, 45.5, 55.5, 65.5, 75.5],
+                fx: [142, 273, 555, 393, 302],
+                sumFx: 1665,
+                mean: 55.5,
+                fk: [4, 10, 20, 26, 30],
+                absDevs: [20, 10, 0, 10, 20],
+                fAbsDevs: [80, 60, 0, 60, 80],
+                sumFAbsDev: 280,
+                sr: 9.33,
+                sqDevs: [400, 100, 0, 100, 400],
+                fSqDevs: [1600, 600, 0, 600, 1600],
+                sumFSqDev: 4400,
+                varians: 146.67,
+                p: 10,
+                q1: { pos: 7.5, tb: 40.5, fk: 4, fq: 6, val: 46.33 },
+                q2: { pos: 15, tb: 50.5, fk: 10, fq: 10, val: 55.5 },
+                q3: { pos: 22.5, tb: 60.5, fk: 20, fq: 6, val: 64.67 },
+                q1Explain: "Letak $Q_1 = 7.5$ (Kelas 41–50). $T_b = 40.5, F_k = 4, f = 6, p = 10$. $Q_1 = 40.5 + \\left(\\frac{7.5-4}{6}\\right) \\times 10 \\approx 46.33$.",
+                q2Explain: "Letak $Q_2 = 15$ (Kelas 51–60). $T_b = 50.5, F_k = 10, f = 10, p = 10$. $Q_2 = 50.5 + \\left(\\frac{15-10}{10}\\right) \\times 10 = 55.5$.",
+                q3Explain: "Letak $Q_3 = 22.5$ (Kelas 61–70). $T_b = 60.5, F_k = 20, f = 6, p = 10$. $Q_3 = 60.5 + \\left(\\frac{22.5-20}{6}\\right) \\times 10 \\approx 64.67$."
+            },
+            {
+                id: 5,
+                title: "Soal 5: Data Waktu Layanan Nasabah Bank / menit (N = 20)",
+                context: "Tabel distribusi frekuensi waktu transaksi 20 nasabah bank:",
+                intervals: ["1 – 5", "6 – 10", "11 – 15", "16 – 20", "21 – 25"],
+                freqs: [3, 5, 8, 3, 1],
+                mids: [3, 8, 13, 18, 23],
+                fx: [9, 40, 104, 54, 23],
+                sumFx: 230,
+                mean: 11.5,
+                fk: [3, 8, 16, 19, 20],
+                absDevs: [8.5, 3.5, 1.5, 6.5, 11.5],
+                fAbsDevs: [25.5, 17.5, 12.0, 19.5, 11.5],
+                sumFAbsDev: 86.0,
+                sr: 4.3,
+                sqDevs: [72.25, 12.25, 2.25, 42.25, 132.25],
+                fSqDevs: [216.75, 61.25, 18.0, 126.75, 132.25],
+                sumFSqDev: 555.0,
+                varians: 27.75,
+                p: 5,
+                q1: { pos: 5, tb: 5.5, fk: 3, fq: 5, val: 7.5 },
+                q2: { pos: 10, tb: 10.5, fk: 8, fq: 8, val: 11.75 },
+                q3: { pos: 15, tb: 10.5, fk: 8, fq: 8, val: 14.88 },
+                q1Explain: "Letak $Q_1 = 5$ (Kelas 6–10). $T_b = 5.5, F_k = 3, f = 5, p = 5$. $Q_1 = 5.5 + \\left(\\frac{5-3}{5}\\right) \\times 5 = 7.5$.",
+                q2Explain: "Letak $Q_2 = 10$ (Kelas 11–15). $T_b = 10.5, F_k = 8, f = 8, p = 5$. $Q_2 = 10.5 + \\left(\\frac{10-8}{8}\\right) \\times 5 = 11.75$.",
+                q3Explain: "Letak $Q_3 = 15$ (Kelas 11–15). $T_b = 10.5, F_k = 8, f = 8, p = 5$. $Q_3 = 10.5 + \\left(\\frac{15-8}{8}\\right) \\times 5 \\approx 14.88$."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizCompletedStatus = [false, false, false, false, false];
+
+        window.onload = function() {
+            switchQuizSoal(1);
+        };
+
+        function triggerKaTeX(container) {
+            if (window.renderMathInElement) {
+                renderMathInElement(container || document.body, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        function switchQuizSoal(soalNum) {
+            currentQuizIndex = soalNum - 1;
+            const data = quizData[currentQuizIndex];
+
+            // Update tab styles
+            for (let i = 1; i <= 5; i++) {
+                const tabBtn = document.getElementById(`quiz-tab-${i}`);
+                if (i === soalNum) {
+                    tabBtn.className = "px-4 py-2 text-xs font-bold rounded-xl bg-brand-600 text-white shadow transition";
+                } else {
+                    tabBtn.className = "px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+                }
+            }
+
+            const container = document.getElementById('quiz-soal-view');
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base sm:text-lg flex items-center gap-2">
+                            <span class="p-1.5 bg-brand-100 text-brand-700 rounded-lg text-xs font-extrabold">#${data.id}</span>
+                            ${data.title}
+                        </h3>
+                        <p class="text-xs text-slate-600 mt-1">${data.context}</p>
+                    </div>
+
+                    <!-- BAGIAN 1: TABEL RATA-RATA (MEAN) & FREKUENSI KUMULATIF -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50/70 p-4 space-y-4">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] flex items-center justify-center">1</span>
+                            Langkah 1: Tabel Titik Tengah ($x_i$), Total $f_i \\cdot x_i$, Frekuensi Kumulatif ($F_k$), dan Mean ($\\bar{x}$)
+                        </h4>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-center border-collapse border border-slate-300 bg-white shadow-sm">
+                                <thead>
+                                    <tr class="bg-slate-100 font-semibold text-slate-700">
+                                        <th class="border p-2">Interval</th>
+                                        <th class="border p-2">Frekuensi ($f_i$)</th>
+                                        <th class="border p-2">Titik Tengah ($x_i$)</th>
+                                        <th class="border p-2">$f_i \\cdot x_i$</th>
+                                        <th class="border p-2">Frekuensi Kumulatif ($F_k$)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.intervals.map((inter, idx) => `
+                                        <tr>
+                                            <td class="border p-2 font-medium bg-slate-50">${inter}</td>
+                                            <td class="border p-2 font-semibold text-slate-700 bg-slate-50">${data.freqs[idx]}</td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-x-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fx-${idx}" class="w-24 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fk-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                        </tr>
+                                    `).join('')}
+                                    <tr class="font-bold bg-slate-100">
+                                        <td class="border p-2">Total ($\\sum$)</td>
+                                        <td class="border p-2 text-brand-700">${data.freqs.reduce((a,b)=>a+b,0)}</td>
+                                        <td class="border p-2 text-slate-400">-</td>
+                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fx" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
+                                        <td class="border p-2 text-slate-400">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-start gap-4 pt-1 bg-white p-3 rounded-lg border border-slate-200">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-800">
+                                <span>Nilai Mean ($\\bar{x}$) =</span>
+                                <input type="number" step="any" id="qz-mean-input" class="w-28 p-1.5 border border-brand-400 rounded-lg text-center font-bold text-brand-700 bg-brand-50/30" placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BAGIAN 2: TABEL BANTUAN SIMPANGAN RATA-RATA & VARIANS -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50/70 p-4 space-y-4">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] flex items-center justify-center">2</span>
+                            Langkah 2: Tabel Bantuan Deviasi ($|x_i - \\bar{x}|$), Varians ($S^2$), dan Simpangan Rata-Rata ($SR$)
+                        </h4>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-center border-collapse border border-slate-300 bg-white shadow-sm">
+                                <thead>
+                                    <tr class="bg-slate-100 font-semibold text-slate-700">
+                                        <th class="border p-2">Interval</th>
+                                        <th class="border p-2">$f_i$</th>
+                                        <th class="border p-2">$|x_i - \\bar{x}|$</th>
+                                        <th class="border p-2">$f_i \\cdot |x_i - \\bar{x}|$</th>
+                                        <th class="border p-2">$(x_i - \\bar{x})^2$</th>
+                                        <th class="border p-2">$f_i \\cdot (x_i - \\bar{x})^2$</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.intervals.map((inter, idx) => `
+                                        <tr>
+                                            <td class="border p-2 font-medium bg-slate-50">${inter}</td>
+                                            <td class="border p-2 bg-slate-50">${data.freqs[idx]}</td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-absdev-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fabsdev-${idx}" class="w-24 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-sqdev-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fsqdev-${idx}" class="w-24 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
+                                        </tr>
+                                    `).join('')}
+                                    <tr class="font-bold bg-slate-100">
+                                        <td class="border p-2">Total ($\\sum$)</td>
+                                        <td class="border p-2 text-brand-700">${data.freqs.reduce((a,b)=>a+b,0)}</td>
+                                        <td class="border p-2 text-slate-400">-</td>
+                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fabsdev" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
+                                        <td class="border p-2 text-slate-400">-</td>
+                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fsqdev" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2">
+                                <label class="font-bold text-slate-800 block">Simpangan Rata-Rata ($SR = \\frac{\\sum f_i |x_i - \\bar{x}|}{N}$):</label>
+                                <input type="number" step="any" id="qz-sr-input" class="w-full p-2 border border-slate-300 rounded-lg font-bold text-center text-brand-700 focus:ring-2 focus:ring-brand-500" placeholder="Masukkan nilai SR">
+                            </div>
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2">
+                                <label class="font-bold text-slate-800 block">Varians ($S^2 = \\frac{\\sum f_i (x_i - \\bar{x})^2}{N}$):</label>
+                                <input type="number" step="any" id="qz-var-input" class="w-full p-2 border border-slate-300 rounded-lg font-bold text-center text-brand-700 focus:ring-2 focus:ring-brand-500" placeholder="Masukkan nilai S²">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BAGIAN 3: KUARTIL (Q1, Q2, Q3) DENGAN KOMPONEN LENGKAP -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50/70 p-4 space-y-4">
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] flex items-center justify-center">3</span>
+                            Langkah 3: Rincian Komponen dan Nilai Kuartil ($Q_1, Q_2, Q_3$)
+                        </h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <!-- Kuartil 1 -->
+                            <div class="p-3 bg-white border border-amber-200 rounded-xl space-y-3 shadow-sm">
+                                <div class="font-bold text-amber-900 border-b pb-1 flex justify-between items-center">
+                                    <span>Kuartil Bawah ($Q_1$)</span>
+                                    <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">i = 1</span>
+                                </div>
+                                <div class="space-y-2 text-[11px]">
+                                    <div class="flex justify-between items-center">
+                                        <span>Letak $\\frac{1}{4}N$:</span>
+                                        <input type="number" step="any" id="qz-q1-pos" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Letak">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Tepi Bawah ($T_b$):</span>
+                                        <input type="number" step="any" id="qz-q1-tb" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Tb">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>$F_k$ sebelum:</span>
+                                        <input type="number" step="any" id="qz-q1-fk" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Fk">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Frekuensi ($f_{Q1}$):</span>
+                                        <input type="number" step="any" id="qz-q1-fq" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="f_Q1">
+                                    </div>
+                                    <div class="pt-2 border-t">
+                                        <label class="font-bold text-amber-900 block mb-1">Hasil Akhir $Q_1$:</label>
+                                        <input type="number" step="any" id="qz-q1-input" class="w-full p-2 border border-amber-400 bg-amber-50/50 rounded font-bold text-center text-amber-900" placeholder="Nilai Q1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kuartil 2 -->
+                            <div class="p-3 bg-white border border-indigo-200 rounded-xl space-y-3 shadow-sm">
+                                <div class="font-bold text-indigo-900 border-b pb-1 flex justify-between items-center">
+                                    <span>Kuartil Tengah ($Q_2$ / Median)</span>
+                                    <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">i = 2</span>
+                                </div>
+                                <div class="space-y-2 text-[11px]">
+                                    <div class="flex justify-between items-center">
+                                        <span>Letak $\\frac{2}{4}N$:</span>
+                                        <input type="number" step="any" id="qz-q2-pos" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Letak">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Tepi Bawah ($T_b$):</span>
+                                        <input type="number" step="any" id="qz-q2-tb" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Tb">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>$F_k$ sebelum:</span>
+                                        <input type="number" step="any" id="qz-q2-fk" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Fk">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Frekuensi ($f_{Q2}$):</span>
+                                        <input type="number" step="any" id="qz-q2-fq" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="f_Q2">
+                                    </div>
+                                    <div class="pt-2 border-t">
+                                        <label class="font-bold text-indigo-900 block mb-1">Hasil Akhir $Q_2$:</label>
+                                        <input type="number" step="any" id="qz-q2-input" class="w-full p-2 border border-indigo-400 bg-indigo-50/50 rounded font-bold text-center text-indigo-900" placeholder="Nilai Q2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kuartil 3 -->
+                            <div class="p-3 bg-white border border-emerald-200 rounded-xl space-y-3 shadow-sm">
+                                <div class="font-bold text-emerald-900 border-b pb-1 flex justify-between items-center">
+                                    <span>Kuartil Atas ($Q_3$)</span>
+                                    <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">i = 3</span>
+                                </div>
+                                <div class="space-y-2 text-[11px]">
+                                    <div class="flex justify-between items-center">
+                                        <span>Letak $\\frac{3}{4}N$:</span>
+                                        <input type="number" step="any" id="qz-q3-pos" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Letak">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Tepi Bawah ($T_b$):</span>
+                                        <input type="number" step="any" id="qz-q3-tb" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Tb">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>$F_k$ sebelum:</span>
+                                        <input type="number" step="any" id="qz-q3-fk" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Fk">
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Frekuensi ($f_{Q3}$):</span>
+                                        <input type="number" step="any" id="qz-q3-fq" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="f_Q3">
+                                    </div>
+                                    <div class="pt-2 border-t">
+                                        <label class="font-bold text-emerald-900 block mb-1">Hasil Akhir $Q_3$:</label>
+                                        <input type="number" step="any" id="qz-q3-input" class="w-full p-2 border border-emerald-400 bg-emerald-50/50 rounded font-bold text-center text-emerald-900" placeholder="Nilai Q3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT BUTTON & FEEDBACK AREA -->
+                    <div class="flex items-center justify-between pt-2">
+                        <button onclick="checkCurrentQuizSoal()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 active:scale-95 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Periksa Jawaban Soal #${data.id}
+                        </button>
+                    </div>
+
+                    <div id="qz-feedback-box" class="hidden text-xs p-4 rounded-xl border space-y-3 transition-all duration-300"></div>
+                </div>
+            `;
+
+            triggerKaTeX(container);
+        }
+
+        function checkCurrentQuizSoal() {
+            const data = quizData[currentQuizIndex];
+            const fbBox = document.getElementById('qz-feedback-box');
+            fbBox.classList.remove('hidden');
+
+            let errors = [];
+
+            // 1. Check Table 1 (x_i, f_i * x_i, F_k)
+            data.mids.forEach((m, idx) => {
+                const userMid = parseFloat(document.getElementById(`qz-x-${idx}`).value);
+                if (isNaN(userMid) || Math.abs(userMid - m) > 0.1) {
+                    errors.push(`Langkah 1: Titik tengah ($x_{${idx+1}}$) interval ${data.intervals[idx]} salah. Seharusnya ${m}.`);
+                }
+            });
+
+            data.fx.forEach((fxVal, idx) => {
+                const userFx = parseFloat(document.getElementById(`qz-fx-${idx}`).value);
+                if (isNaN(userFx) || Math.abs(userFx - fxVal) > 0.2) {
+                    errors.push(`Langkah 1: $f_i \\cdot x_i$ interval ${data.intervals[idx]} salah. Seharusnya ${fxVal}.`);
+                }
+            });
+
+            data.fk.forEach((fkVal, idx) => {
+                const userFk = parseFloat(document.getElementById(`qz-fk-${idx}`).value);
+                if (isNaN(userFk) || Math.abs(userFk - fkVal) > 0.1) {
+                    errors.push(`Langkah 1: Frekuensi kumulatif ($F_k$) interval ${data.intervals[idx]} salah. Seharusnya ${fkVal}.`);
+                }
+            });
+
+            const userSumFx = parseFloat(document.getElementById('qz-sum-fx').value);
+            const userMean = parseFloat(document.getElementById('qz-mean-input').value);
+
+            if (isNaN(userSumFx) || Math.abs(userSumFx - data.sumFx) > 0.2) {
+                errors.push(`Langkah 1: Total $\\sum f_i x_i$ salah. Seharusnya ${data.sumFx}.`);
+            }
+            if (isNaN(userMean) || Math.abs(userMean - data.mean) > 0.2) {
+                errors.push(`Langkah 1: Nilai Mean ($\\bar{x}$) salah. Seharusnya ${data.mean}.`);
+            }
+
+            // 2. Check Table 2 (Deviations, Variances)
+            const userSumFAbsDev = parseFloat(document.getElementById('qz-sum-fabsdev').value);
+            const userSumFSqDev = parseFloat(document.getElementById('qz-sum-fsqdev').value);
+            const userSr = parseFloat(document.getElementById('qz-sr-input').value);
+            const userVar = parseFloat(document.getElementById('qz-var-input').value);
+
+            if (isNaN(userSumFAbsDev) || Math.abs(userSumFAbsDev - data.sumFAbsDev) > 0.3) {
+                errors.push(`Langkah 2: Total $\\sum f_i |x_i - \\bar{x}|$ salah. Seharusnya ${data.sumFAbsDev}.`);
+            }
+            if (isNaN(userSumFSqDev) || Math.abs(userSumFSqDev - data.sumFSqDev) > 0.5) {
+                errors.push(`Langkah 2: Total $\\sum f_i (x_i - \\bar{x})^2$ salah. Seharusnya ${data.sumFSqDev}.`);
+            }
+            if (isNaN(userSr) || Math.abs(userSr - data.sr) > 0.2) {
+                errors.push(`Langkah 2: Simpangan Rata-Rata ($SR$) salah. Seharusnya ${data.sr}.`);
+            }
+            if (isNaN(userVar) || Math.abs(userVar - data.varians) > 0.3) {
+                errors.push(`Langkah 2: Varians ($S^2$) salah. Seharusnya ${data.varians}.`);
+            }
+
+            // 3. Check Quartiles details & values
+            // Q1
+            const uQ1Pos = parseFloat(document.getElementById('qz-q1-pos').value);
+            const uQ1Tb = parseFloat(document.getElementById('qz-q1-tb').value);
+            const uQ1Fk = parseFloat(document.getElementById('qz-q1-fk').value);
+            const uQ1Fq = parseFloat(document.getElementById('qz-q1-fq').value);
+            const uQ1Val = parseFloat(document.getElementById('qz-q1-input').value);
+
+            if (isNaN(uQ1Pos) || Math.abs(uQ1Pos - data.q1.pos) > 0.1 || isNaN(uQ1Tb) || Math.abs(uQ1Tb - data.q1.tb) > 0.1 || isNaN(uQ1Val) || Math.abs(uQ1Val - data.q1.val) > 0.3) {
+                errors.push(`Langkah 3 ($Q_1$): Rincian atau Nilai Kuartil Bawah ($Q_1$) belum tepat. ${data.q1Explain}`);
+            }
+
+            // Q2
+            const uQ2Pos = parseFloat(document.getElementById('qz-q2-pos').value);
+            const uQ2Tb = parseFloat(document.getElementById('qz-q2-tb').value);
+            const uQ2Fk = parseFloat(document.getElementById('qz-q2-fk').value);
+            const uQ2Fq = parseFloat(document.getElementById('qz-q2-fq').value);
+            const uQ2Val = parseFloat(document.getElementById('qz-q2-input').value);
+
+            if (isNaN(uQ2Pos) || Math.abs(uQ2Pos - data.q2.pos) > 0.1 || isNaN(uQ2Tb) || Math.abs(uQ2Tb - data.q2.tb) > 0.1 || isNaN(uQ2Val) || Math.abs(uQ2Val - data.q2.val) > 0.3) {
+                errors.push(`Langkah 3 ($Q_2$): Rincian atau Nilai Kuartil Tengah ($Q_2$) belum tepat. ${data.q2Explain}`);
+            }
+
+            // Q3
+            const uQ3Pos = parseFloat(document.getElementById('qz-q3-pos').value);
+            const uQ3Tb = parseFloat(document.getElementById('qz-q3-tb').value);
+            const uQ3Fk = parseFloat(document.getElementById('qz-q3-fk').value);
+            const uQ3Fq = parseFloat(document.getElementById('qz-q3-fq').value);
+            const uQ3Val = parseFloat(document.getElementById('qz-q3-input').value);
+
+            if (isNaN(uQ3Pos) || Math.abs(uQ3Pos - data.q3.pos) > 0.1 || isNaN(uQ3Tb) || Math.abs(uQ3Tb - data.q3.tb) > 0.1 || isNaN(uQ3Val) || Math.abs(uQ3Val - data.q3.val) > 0.3) {
+                errors.push(`Langkah 3 ($Q_3$): Rincian atau Nilai Kuartil Atas ($Q_3$) belum tepat. ${data.q3Explain}`);
+            }
+
+            if (errors.length === 0) {
+                fbBox.className = "text-xs p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-emerald-900 space-y-2 shadow-sm";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-sm flex items-center gap-2 text-emerald-800">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>LUAR BIASA! Jawaban Soal #${data.id} SEMUA BENAR!</span>
+                    </div>
+                    <p class="leading-relaxed">Kamu telah menyelesaikan seluruh tahapan perhitungan Mean, Frekuensi Kumulatif, Simpangan Rata-Rata, Varians, dan Kuartil dengan sangat presisi!</p>
+                `;
+                quizCompletedStatus[currentQuizIndex] = true;
+            } else {
+                fbBox.className = "text-xs p-4 rounded-xl border bg-rose-50 border-rose-300 text-rose-900 space-y-2 shadow-sm";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-sm flex items-center gap-2 text-rose-800">
+                        <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Masih Ada Beberapa Perhitungan Yang Perlu Diperbaiki (${errors.length} catatan):</span>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1.5 mt-1 text-xs text-rose-800 leading-relaxed">
+                        ${errors.map(err => `<li>${err}</li>`).join('')}
+                    </ul>
+                `;
+                quizCompletedStatus[currentQuizIndex] = false;
+            }
+
+            // Update Total Score Banner
+            const completedCount = quizCompletedStatus.filter(Boolean).length;
+            document.getElementById('quiz-total-score').innerText = `${completedCount} / 5`;
+
+            triggerKaTeX(fbBox);
+        }
+    </script>
+</body>
+</html>

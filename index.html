@@ -55,7 +55,7 @@
 
     <header class="sticky top-0 z-50 bg-white/90 backdrop-filter backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
+            <div class="flex flex-wrap justify-between h-auto py-3 sm:h-16 items-center gap-3">
                 <div class="flex items-center space-x-3">
                     <div class="p-2 bg-brand-600 text-white rounded-xl shadow-md">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,6 +66,24 @@
                         <h1 class="font-bold text-lg text-slate-900 leading-tight">Quiz Statistika Matematika</h1>
                         <p class="text-xs text-slate-500">Evaluasi Mandiri Data Kelompok Lengkap</p>
                     </div>
+                </div>
+
+                <!-- Auto-save notification badge -->
+                <div class="flex items-center space-x-3 text-xs">
+                    <div id="save-status-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 transition-all duration-300 font-medium">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span id="save-status-text">Otomatis Menyimpan</span>
+                    </div>
+
+                    <button onclick="confirmResetQuizData()" title="Hapus semua jawaban tersimpan" class="px-2.5 py-1.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        <span>Reset</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -81,7 +99,7 @@
                     Quiz Interaktif: 5 Soal Data Kelompok Komprehensif
                 </h2>
                 <p class="text-slate-600 text-xs sm:text-sm mt-2">
-                    Lengkapi tabel bantuan <strong>Mean, Frekuensi Kumulatif, Simpangan Rata-rata, Varians</strong>, serta rincian komponen <strong>Kuartil (Q1, Q2, Q3)</strong> pada setiap soal!
+                    Jawaban Anda akan <strong>tersimpan otomatis secara real-time</strong>. Lengkapi tabel bantuan <strong>Mean, Frekuensi Kumulatif, Simpangan Rata-rata, Varians</strong>, serta rincian <strong>Kuartil (Q1, Q2, Q3)</strong>!
                 </p>
             </div>
 
@@ -97,8 +115,9 @@
                         <button onclick="switchQuizSoal(5)" id="quiz-tab-5" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Soal 5</button>
                     </div>
 
-                    <div class="text-xs font-bold text-slate-700 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100">
-                        Skor Quiz: <span id="quiz-total-score" class="text-brand-600 text-sm font-extrabold">0 / 5</span> Selesai
+                    <div class="text-xs font-bold text-slate-700 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100 flex items-center gap-2">
+                        <span>Skor Selesai:</span>
+                        <span id="quiz-total-score" class="text-brand-600 text-sm font-extrabold">0 / 5</span>
                     </div>
                 </div>
 
@@ -118,6 +137,7 @@
     </footer>
 
     <script>
+        // Verified quiz data with precise calculations for all 5 questions
         const quizData = [
             {
                 id: 1,
@@ -169,9 +189,9 @@
                 q1: { pos: 7.5, tb: 145.5, fk: 3, fq: 5, val: 150.0 },
                 q2: { pos: 15, tb: 150.5, fk: 8, fq: 12, val: 153.42 },
                 q3: { pos: 22.5, tb: 155.5, fk: 20, fq: 6, val: 157.58 },
-                q1Explain: "Letak $Q_1 = 7.5$ (Kelas 146–150). $T_b = 145.5, F_k = 3, f = 5, p = 5$. $Q_1 = 145.5 + \\left(\\frac{7.5-3}{5}\\right) \\times 5 = 150.0$.",
-                q2Explain: "Letak $Q_2 = 15$ (Kelas 151–155). $T_b = 150.5, F_k = 8, f = 12, p = 5$. $Q_2 = 150.5 + \\left(\\frac{15-8}{12}\\right) \\times 5 \\approx 153.42$.",
-                q3Explain: "Letak $Q_3 = 22.5$ (Kelas 156–160). $T_b = 155.5, F_k = 20, f = 6, p = 5$. $Q_3 = 155.5 + \\left(\\frac{22.5-20}{6}\\right) \\times 5 \\approx 157.58$."
+                q1Explain: "Letak $Q_1 = \\frac{1}{4} \\times 30 = 7.5$ (Kelas 146–150). $T_b = 145.5, F_k = 3, f = 5, p = 5$. $Q_1 = 145.5 + \\left(\\frac{7.5-3}{5}\\right) \\times 5 = 150.0$.",
+                q2Explain: "Letak $Q_2 = \\frac{2}{4} \\times 30 = 15$ (Kelas 151–155). $T_b = 150.5, F_k = 8, f = 12, p = 5$. $Q_2 = 150.5 + \\left(\\frac{15-8}{12}\\right) \\times 5 \\approx 153.42$.",
+                q3Explain: "Letak $Q_3 = \\frac{3}{4} \\times 30 = 22.5$ (Kelas 156–160). $T_b = 155.5, F_k = 20, f = 6, p = 5$. $Q_3 = 155.5 + \\left(\\frac{22.5-20}{6}\\right) \\times 5 \\approx 157.58$."
             },
             {
                 id: 3,
@@ -256,12 +276,100 @@
             }
         ];
 
+        const STORAGE_KEY = "quiz_statistika_user_answers_v1";
         let currentQuizIndex = 0;
         let quizCompletedStatus = [false, false, false, false, false];
+        let savedAnswersStore = {}; // { soal1: { fieldId: value }, ... }
 
         window.onload = function() {
-            switchQuizSoal(1);
+            loadSavedData();
+            switchQuizSoal(currentQuizIndex + 1);
+            updateTotalScoreDisplay();
         };
+
+        // Save state to LocalStorage
+        function saveToLocalStorage() {
+            try {
+                const payload = {
+                    currentQuizIndex: currentQuizIndex,
+                    quizCompletedStatus: quizCompletedStatus,
+                    savedAnswersStore: savedAnswersStore
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+                
+                // Visual feedback badge update
+                const badge = document.getElementById('save-status-text');
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                if (badge) {
+                    badge.innerText = `Tersimpan otomatis (${timeStr})`;
+                }
+            } catch (e) {
+                console.warn("Storage auto-save error:", e);
+            }
+        }
+
+        // Load state from LocalStorage
+        function loadSavedData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed.savedAnswersStore) savedAnswersStore = parsed.savedAnswersStore;
+                    if (parsed.quizCompletedStatus && Array.isArray(parsed.quizCompletedStatus)) {
+                        quizCompletedStatus = parsed.quizCompletedStatus;
+                    }
+                    if (typeof parsed.currentQuizIndex === 'number' && parsed.currentQuizIndex >= 0 && parsed.currentQuizIndex < 5) {
+                        currentQuizIndex = parsed.currentQuizIndex;
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not load stored answers:", e);
+            }
+        }
+
+        // Reset user saved quiz answers
+        function confirmResetQuizData() {
+            if (confirm("Apakah Anda yakin ingin menghapus semua jawaban yang tersimpan dan memulai ulang?")) {
+                localStorage.removeItem(STORAGE_KEY);
+                savedAnswersStore = {};
+                quizCompletedStatus = [false, false, false, false, false];
+                switchQuizSoal(currentQuizIndex + 1);
+                updateTotalScoreDisplay();
+                alert("Semua jawaban tersimpan telah dibersihkan.");
+            }
+        }
+
+        // Collect inputs from DOM and write into in-memory store
+        function captureCurrentInputs() {
+            const soalIdKey = `soal_${currentQuizIndex + 1}`;
+            if (!savedAnswersStore[soalIdKey]) {
+                savedAnswersStore[soalIdKey] = {};
+            }
+
+            const inputs = document.querySelectorAll('#quiz-soal-view input');
+            inputs.forEach(input => {
+                if (input.id) {
+                    savedAnswersStore[soalIdKey][input.id] = input.value;
+                }
+            });
+
+            saveToLocalStorage();
+        }
+
+        // Restore input values from memory store into DOM
+        function restoreCurrentInputs() {
+            const soalIdKey = `soal_${currentQuizIndex + 1}`;
+            const stored = savedAnswersStore[soalIdKey];
+            if (!stored) return;
+
+            Object.keys(stored).forEach(id => {
+                const elem = document.getElementById(id);
+                if (elem) {
+                    elem.value = stored[id];
+                }
+            });
+        }
 
         function triggerKaTeX(container) {
             if (window.renderMathInElement) {
@@ -276,10 +384,13 @@
         }
 
         function switchQuizSoal(soalNum) {
+            // Capture inputs from active tab before changing
+            captureCurrentInputs();
+
             currentQuizIndex = soalNum - 1;
             const data = quizData[currentQuizIndex];
 
-            // Update tab styles
+            // Update tab button styles
             for (let i = 1; i <= 5; i++) {
                 const tabBtn = document.getElementById(`quiz-tab-${i}`);
                 if (i === soalNum) {
@@ -323,16 +434,16 @@
                                         <tr>
                                             <td class="border p-2 font-medium bg-slate-50">${inter}</td>
                                             <td class="border p-2 font-semibold text-slate-700 bg-slate-50">${data.freqs[idx]}</td>
-                                            <td class="border p-1.5"><input type="number" step="any" id="qz-x-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
-                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fx-${idx}" class="w-24 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
-                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fk-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-x-${idx}" oninput="captureCurrentInputs()" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fx-${idx}" oninput="captureCurrentInputs()" class="w-24 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fk-${idx}" oninput="captureCurrentInputs()" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
                                         </tr>
                                     `).join('')}
                                     <tr class="font-bold bg-slate-100">
                                         <td class="border p-2">Total ($\\sum$)</td>
                                         <td class="border p-2 text-brand-700">${data.freqs.reduce((a,b)=>a+b,0)}</td>
                                         <td class="border p-2 text-slate-400">-</td>
-                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fx" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
+                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fx" oninput="captureCurrentInputs()" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
                                         <td class="border p-2 text-slate-400">-</td>
                                     </tr>
                                 </tbody>
@@ -342,7 +453,7 @@
                         <div class="flex flex-wrap items-center justify-start gap-4 pt-1 bg-white p-3 rounded-lg border border-slate-200">
                             <div class="flex items-center gap-2 text-xs font-semibold text-slate-800">
                                 <span>Nilai Mean ($\\bar{x}$) =</span>
-                                <input type="number" step="any" id="qz-mean-input" class="w-28 p-1.5 border border-brand-400 rounded-lg text-center font-bold text-brand-700 bg-brand-50/30" placeholder="0.0">
+                                <input type="number" step="any" id="qz-mean-input" oninput="captureCurrentInputs()" class="w-28 p-1.5 border border-brand-400 rounded-lg text-center font-bold text-brand-700 bg-brand-50/30" placeholder="0.0">
                             </div>
                         </div>
                     </div>
@@ -371,19 +482,19 @@
                                         <tr>
                                             <td class="border p-2 font-medium bg-slate-50">${inter}</td>
                                             <td class="border p-2 bg-slate-50">${data.freqs[idx]}</td>
-                                            <td class="border p-1.5"><input type="number" step="any" id="qz-absdev-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
-                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fabsdev-${idx}" class="w-24 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
-                                            <td class="border p-1.5"><input type="number" step="any" id="qz-sqdev-${idx}" class="w-20 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
-                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fsqdev-${idx}" class="w-24 p-1 border border-slate-300 rounded text-center" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-absdev-${idx}" oninput="captureCurrentInputs()" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fabsdev-${idx}" oninput="captureCurrentInputs()" class="w-24 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-sqdev-${idx}" oninput="captureCurrentInputs()" class="w-20 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
+                                            <td class="border p-1.5"><input type="number" step="any" id="qz-fsqdev-${idx}" oninput="captureCurrentInputs()" class="w-24 p-1 border border-slate-300 rounded text-center focus:ring-2 focus:ring-brand-500" placeholder="?"></td>
                                         </tr>
                                     `).join('')}
                                     <tr class="font-bold bg-slate-100">
                                         <td class="border p-2">Total ($\\sum$)</td>
                                         <td class="border p-2 text-brand-700">${data.freqs.reduce((a,b)=>a+b,0)}</td>
                                         <td class="border p-2 text-slate-400">-</td>
-                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fabsdev" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
+                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fabsdev" oninput="captureCurrentInputs()" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
                                         <td class="border p-2 text-slate-400">-</td>
-                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fsqdev" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
+                                        <td class="border p-1.5"><input type="number" step="any" id="qz-sum-fsqdev" oninput="captureCurrentInputs()" class="w-24 p-1 border border-indigo-300 rounded text-center font-bold bg-indigo-50" placeholder="Total"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -392,11 +503,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                             <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2">
                                 <label class="font-bold text-slate-800 block">Simpangan Rata-Rata ($SR = \\frac{\\sum f_i |x_i - \\bar{x}|}{N}$):</label>
-                                <input type="number" step="any" id="qz-sr-input" class="w-full p-2 border border-slate-300 rounded-lg font-bold text-center text-brand-700 focus:ring-2 focus:ring-brand-500" placeholder="Masukkan nilai SR">
+                                <input type="number" step="any" id="qz-sr-input" oninput="captureCurrentInputs()" class="w-full p-2 border border-slate-300 rounded-lg font-bold text-center text-brand-700 focus:ring-2 focus:ring-brand-500" placeholder="Masukkan nilai SR">
                             </div>
                             <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2">
                                 <label class="font-bold text-slate-800 block">Varians ($S^2 = \\frac{\\sum f_i (x_i - \\bar{x})^2}{N}$):</label>
-                                <input type="number" step="any" id="qz-var-input" class="w-full p-2 border border-slate-300 rounded-lg font-bold text-center text-brand-700 focus:ring-2 focus:ring-brand-500" placeholder="Masukkan nilai S²">
+                                <input type="number" step="any" id="qz-var-input" oninput="captureCurrentInputs()" class="w-full p-2 border border-slate-300 rounded-lg font-bold text-center text-brand-700 focus:ring-2 focus:ring-brand-500" placeholder="Masukkan nilai S²">
                             </div>
                         </div>
                     </div>
@@ -418,23 +529,23 @@
                                 <div class="space-y-2 text-[11px]">
                                     <div class="flex justify-between items-center">
                                         <span>Letak $\\frac{1}{4}N$:</span>
-                                        <input type="number" step="any" id="qz-q1-pos" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Letak">
+                                        <input type="number" step="any" id="qz-q1-pos" oninput="captureCurrentInputs()" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Letak">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>Tepi Bawah ($T_b$):</span>
-                                        <input type="number" step="any" id="qz-q1-tb" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Tb">
+                                        <input type="number" step="any" id="qz-q1-tb" oninput="captureCurrentInputs()" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Tb">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>$F_k$ sebelum:</span>
-                                        <input type="number" step="any" id="qz-q1-fk" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Fk">
+                                        <input type="number" step="any" id="qz-q1-fk" oninput="captureCurrentInputs()" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="Fk">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>Frekuensi ($f_{Q1}$):</span>
-                                        <input type="number" step="any" id="qz-q1-fq" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="f_Q1">
+                                        <input type="number" step="any" id="qz-q1-fq" oninput="captureCurrentInputs()" class="w-20 p-1 border border-amber-300 rounded text-center font-semibold" placeholder="f_Q1">
                                     </div>
                                     <div class="pt-2 border-t">
                                         <label class="font-bold text-amber-900 block mb-1">Hasil Akhir $Q_1$:</label>
-                                        <input type="number" step="any" id="qz-q1-input" class="w-full p-2 border border-amber-400 bg-amber-50/50 rounded font-bold text-center text-amber-900" placeholder="Nilai Q1">
+                                        <input type="number" step="any" id="qz-q1-input" oninput="captureCurrentInputs()" class="w-full p-2 border border-amber-400 bg-amber-50/50 rounded font-bold text-center text-amber-900" placeholder="Nilai Q1">
                                     </div>
                                 </div>
                             </div>
@@ -448,23 +559,23 @@
                                 <div class="space-y-2 text-[11px]">
                                     <div class="flex justify-between items-center">
                                         <span>Letak $\\frac{2}{4}N$:</span>
-                                        <input type="number" step="any" id="qz-q2-pos" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Letak">
+                                        <input type="number" step="any" id="qz-q2-pos" oninput="captureCurrentInputs()" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Letak">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>Tepi Bawah ($T_b$):</span>
-                                        <input type="number" step="any" id="qz-q2-tb" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Tb">
+                                        <input type="number" step="any" id="qz-q2-tb" oninput="captureCurrentInputs()" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Tb">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>$F_k$ sebelum:</span>
-                                        <input type="number" step="any" id="qz-q2-fk" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Fk">
+                                        <input type="number" step="any" id="qz-q2-fk" oninput="captureCurrentInputs()" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="Fk">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>Frekuensi ($f_{Q2}$):</span>
-                                        <input type="number" step="any" id="qz-q2-fq" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="f_Q2">
+                                        <input type="number" step="any" id="qz-q2-fq" oninput="captureCurrentInputs()" class="w-20 p-1 border border-indigo-300 rounded text-center font-semibold" placeholder="f_Q2">
                                     </div>
                                     <div class="pt-2 border-t">
                                         <label class="font-bold text-indigo-900 block mb-1">Hasil Akhir $Q_2$:</label>
-                                        <input type="number" step="any" id="qz-q2-input" class="w-full p-2 border border-indigo-400 bg-indigo-50/50 rounded font-bold text-center text-indigo-900" placeholder="Nilai Q2">
+                                        <input type="number" step="any" id="qz-q2-input" oninput="captureCurrentInputs()" class="w-full p-2 border border-indigo-400 bg-indigo-50/50 rounded font-bold text-center text-indigo-900" placeholder="Nilai Q2">
                                     </div>
                                 </div>
                             </div>
@@ -478,23 +589,23 @@
                                 <div class="space-y-2 text-[11px]">
                                     <div class="flex justify-between items-center">
                                         <span>Letak $\\frac{3}{4}N$:</span>
-                                        <input type="number" step="any" id="qz-q3-pos" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Letak">
+                                        <input type="number" step="any" id="qz-q3-pos" oninput="captureCurrentInputs()" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Letak">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>Tepi Bawah ($T_b$):</span>
-                                        <input type="number" step="any" id="qz-q3-tb" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Tb">
+                                        <input type="number" step="any" id="qz-q3-tb" oninput="captureCurrentInputs()" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Tb">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>$F_k$ sebelum:</span>
-                                        <input type="number" step="any" id="qz-q3-fk" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Fk">
+                                        <input type="number" step="any" id="qz-q3-fk" oninput="captureCurrentInputs()" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="Fk">
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span>Frekuensi ($f_{Q3}$):</span>
-                                        <input type="number" step="any" id="qz-q3-fq" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="f_Q3">
+                                        <input type="number" step="any" id="qz-q3-fq" oninput="captureCurrentInputs()" class="w-20 p-1 border border-emerald-300 rounded text-center font-semibold" placeholder="f_Q3">
                                     </div>
                                     <div class="pt-2 border-t">
                                         <label class="font-bold text-emerald-900 block mb-1">Hasil Akhir $Q_3$:</label>
-                                        <input type="number" step="any" id="qz-q3-input" class="w-full p-2 border border-emerald-400 bg-emerald-50/50 rounded font-bold text-center text-emerald-900" placeholder="Nilai Q3">
+                                        <input type="number" step="any" id="qz-q3-input" oninput="captureCurrentInputs()" class="w-full p-2 border border-emerald-400 bg-emerald-50/50 rounded font-bold text-center text-emerald-900" placeholder="Nilai Q3">
                                     </div>
                                 </div>
                             </div>
@@ -515,10 +626,16 @@
                 </div>
             `;
 
+            // Restore saved values into inputs
+            restoreCurrentInputs();
+
+            // Render Math Latex
             triggerKaTeX(container);
         }
 
         function checkCurrentQuizSoal() {
+            captureCurrentInputs(); // Ensure storage is up to date
+
             const data = quizData[currentQuizIndex];
             const fbBox = document.getElementById('qz-feedback-box');
             fbBox.classList.remove('hidden');
@@ -557,7 +674,35 @@
                 errors.push(`Langkah 1: Nilai Mean ($\\bar{x}$) salah. Seharusnya ${data.mean}.`);
             }
 
-            // 2. Check Table 2 (Deviations, Variances)
+            // 2. Check Table 2 (Individual row deviations, f*dev, dev^2, f*dev^2)
+            data.absDevs.forEach((adVal, idx) => {
+                const userAd = parseFloat(document.getElementById(`qz-absdev-${idx}`).value);
+                if (isNaN(userAd) || Math.abs(userAd - adVal) > 0.2) {
+                    errors.push(`Langkah 2: $|x_i - \\bar{x}|$ interval ${data.intervals[idx]} salah. Seharusnya ${adVal}.`);
+                }
+            });
+
+            data.fAbsDevs.forEach((fadVal, idx) => {
+                const userFad = parseFloat(document.getElementById(`qz-fabsdev-${idx}`).value);
+                if (isNaN(userFad) || Math.abs(userFad - fadVal) > 0.2) {
+                    errors.push(`Langkah 2: $f_i \\cdot |x_i - \\bar{x}|$ interval ${data.intervals[idx]} salah. Seharusnya ${fadVal}.`);
+                }
+            });
+
+            data.sqDevs.forEach((sqVal, idx) => {
+                const userSq = parseFloat(document.getElementById(`qz-sqdev-${idx}`).value);
+                if (isNaN(userSq) || Math.abs(userSq - sqVal) > 0.3) {
+                    errors.push(`Langkah 2: $(x_i - \\bar{x})^2$ interval ${data.intervals[idx]} salah. Seharusnya ${sqVal}.`);
+                }
+            });
+
+            data.fSqDevs.forEach((fsqVal, idx) => {
+                const userFsq = parseFloat(document.getElementById(`qz-fsqdev-${idx}`).value);
+                if (isNaN(userFsq) || Math.abs(userFsq - fsqVal) > 0.3) {
+                    errors.push(`Langkah 2: $f_i \\cdot (x_i - \\bar{x})^2$ interval ${data.intervals[idx]} salah. Seharusnya ${fsqVal}.`);
+                }
+            });
+
             const userSumFAbsDev = parseFloat(document.getElementById('qz-sum-fabsdev').value);
             const userSumFSqDev = parseFloat(document.getElementById('qz-sum-fsqdev').value);
             const userSr = parseFloat(document.getElementById('qz-sr-input').value);
@@ -584,7 +729,11 @@
             const uQ1Fq = parseFloat(document.getElementById('qz-q1-fq').value);
             const uQ1Val = parseFloat(document.getElementById('qz-q1-input').value);
 
-            if (isNaN(uQ1Pos) || Math.abs(uQ1Pos - data.q1.pos) > 0.1 || isNaN(uQ1Tb) || Math.abs(uQ1Tb - data.q1.tb) > 0.1 || isNaN(uQ1Val) || Math.abs(uQ1Val - data.q1.val) > 0.3) {
+            if (isNaN(uQ1Pos) || Math.abs(uQ1Pos - data.q1.pos) > 0.1 || 
+                isNaN(uQ1Tb) || Math.abs(uQ1Tb - data.q1.tb) > 0.1 || 
+                isNaN(uQ1Fk) || Math.abs(uQ1Fk - data.q1.fk) > 0.1 ||
+                isNaN(uQ1Fq) || Math.abs(uQ1Fq - data.q1.fq) > 0.1 ||
+                isNaN(uQ1Val) || Math.abs(uQ1Val - data.q1.val) > 0.3) {
                 errors.push(`Langkah 3 ($Q_1$): Rincian atau Nilai Kuartil Bawah ($Q_1$) belum tepat. ${data.q1Explain}`);
             }
 
@@ -595,7 +744,11 @@
             const uQ2Fq = parseFloat(document.getElementById('qz-q2-fq').value);
             const uQ2Val = parseFloat(document.getElementById('qz-q2-input').value);
 
-            if (isNaN(uQ2Pos) || Math.abs(uQ2Pos - data.q2.pos) > 0.1 || isNaN(uQ2Tb) || Math.abs(uQ2Tb - data.q2.tb) > 0.1 || isNaN(uQ2Val) || Math.abs(uQ2Val - data.q2.val) > 0.3) {
+            if (isNaN(uQ2Pos) || Math.abs(uQ2Pos - data.q2.pos) > 0.1 || 
+                isNaN(uQ2Tb) || Math.abs(uQ2Tb - data.q2.tb) > 0.1 || 
+                isNaN(uQ2Fk) || Math.abs(uQ2Fk - data.q2.fk) > 0.1 ||
+                isNaN(uQ2Fq) || Math.abs(uQ2Fq - data.q2.fq) > 0.1 ||
+                isNaN(uQ2Val) || Math.abs(uQ2Val - data.q2.val) > 0.3) {
                 errors.push(`Langkah 3 ($Q_2$): Rincian atau Nilai Kuartil Tengah ($Q_2$) belum tepat. ${data.q2Explain}`);
             }
 
@@ -606,10 +759,15 @@
             const uQ3Fq = parseFloat(document.getElementById('qz-q3-fq').value);
             const uQ3Val = parseFloat(document.getElementById('qz-q3-input').value);
 
-            if (isNaN(uQ3Pos) || Math.abs(uQ3Pos - data.q3.pos) > 0.1 || isNaN(uQ3Tb) || Math.abs(uQ3Tb - data.q3.tb) > 0.1 || isNaN(uQ3Val) || Math.abs(uQ3Val - data.q3.val) > 0.3) {
+            if (isNaN(uQ3Pos) || Math.abs(uQ3Pos - data.q3.pos) > 0.1 || 
+                isNaN(uQ3Tb) || Math.abs(uQ3Tb - data.q3.tb) > 0.1 || 
+                isNaN(uQ3Fk) || Math.abs(uQ3Fk - data.q3.fk) > 0.1 ||
+                isNaN(uQ3Fq) || Math.abs(uQ3Fq - data.q3.fq) > 0.1 ||
+                isNaN(uQ3Val) || Math.abs(uQ3Val - data.q3.val) > 0.3) {
                 errors.push(`Langkah 3 ($Q_3$): Rincian atau Nilai Kuartil Atas ($Q_3$) belum tepat. ${data.q3Explain}`);
             }
 
+            // Evaluation result presentation
             if (errors.length === 0) {
                 fbBox.className = "text-xs p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-emerald-900 space-y-2 shadow-sm";
                 fbBox.innerHTML = `
@@ -631,18 +789,24 @@
                         </svg>
                         <span>Masih Ada Beberapa Perhitungan Yang Perlu Diperbaiki (${errors.length} catatan):</span>
                     </div>
-                    <ul class="list-disc list-inside space-y-1.5 mt-1 text-xs text-rose-800 leading-relaxed">
+                    <ul class="list-disc list-inside space-y-1.5 mt-1 text-rose-800 leading-relaxed">
                         ${errors.map(err => `<li>${err}</li>`).join('')}
                     </ul>
                 `;
                 quizCompletedStatus[currentQuizIndex] = false;
             }
 
-            // Update Total Score Banner
-            const completedCount = quizCompletedStatus.filter(Boolean).length;
-            document.getElementById('quiz-total-score').innerText = `${completedCount} / 5`;
-
+            updateTotalScoreDisplay();
+            saveToLocalStorage();
             triggerKaTeX(fbBox);
+        }
+
+        function updateTotalScoreDisplay() {
+            const completedCount = quizCompletedStatus.filter(Boolean).length;
+            const elem = document.getElementById('quiz-total-score');
+            if (elem) {
+                elem.innerText = `${completedCount} / 5`;
+            }
         }
     </script>
 </body>
